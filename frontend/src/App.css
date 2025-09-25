@@ -1,0 +1,71 @@
+.navbar {
+  background-color: #1e1e1e; /* warna gelap */
+  padding: 15px 30px;
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  gap: 20px; /* jarak antar link */
+  border-radius: 0 0 10px 10px; /* lengkung bawah */
+}
+
+.navbar a {
+  color: #ffffff;
+  text-decoration: none;
+  font-weight: 500;
+  font-size: 18px;
+  transition: 0.3s;
+}
+
+.navbar a:hover {
+  color: #00bfff; /* efek hover */
+  border-bottom: 2px solid #00bfff;
+  padding-bottom: 3px;
+}
+
+.nav-link {
+  color: #4db8ff;
+  text-decoration: none;
+}
+
+.nav-link:hover {
+  text-decoration: underline;
+}
+
+/* General page layout */
+.page-container {
+  padding: 20px;
+}
+
+/* Form style */
+.form-card {
+  background: #222;
+  padding: 16px;
+  border: 1px solid #444;
+  border-radius: 8px;
+  margin-top: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.form-card input,
+.form-card textarea {
+  padding: 8px;
+  border-radius: 4px;
+  border: 1px solid #555;
+  background: #111;
+  color: #eee;
+}
+
+.form-card button {
+  padding: 8px;
+  background: #4db8ff;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+}
+.post-title {
+  color: #1E90FF;      /* Dodger Blue, keliatan clean di tema hitam-putih */
+  font-weight: bold;   /* optional: biar lebih tegas */
+  margin-bottom: 10px; /* kasih jarak ke body */
+}

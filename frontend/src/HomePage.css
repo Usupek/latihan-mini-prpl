@@ -1,0 +1,51 @@
+.home-container {
+  display: flex;
+  height: 100vh;
+  background: #f8f9fa;
+}
+
+/* Kiri: daftar post */
+.posts-list {
+  width: 35%;
+  border-right: 2px solid #ddd;
+  padding: 1rem;
+  background: #fff;
+  overflow-y: auto;
+}
+
+.posts-list h2 {
+  margin-bottom: 1rem;
+}
+
+.post-item {
+  padding: 1rem;
+  margin-bottom: 0.8rem;
+  background: #f1f1f1;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: background 0.2s ease;
+}
+
+.post-item:hover {
+  background: #e0e0e0;
+}
+
+.post-item.active {
+  background: #007bff;
+  color: white;
+}
+
+/* Kanan: detail post */
+.post-detail {
+  flex: 1;
+  padding: 2rem;
+}
+
+.post-detail h2 {
+  margin-bottom: 1rem;
+}
+
+.placeholder {
+  color: gray;
+  font-style: italic;
+}
