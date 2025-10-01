@@ -4,6 +4,14 @@ import jwt from "jsonwebtoken";
 
 const router = express.Router();
 
+const signToken = (user) => {
+  return jwt.sign(
+    { id: user._id, username: user.username, email: user.email },
+    process.env.JWT_SECRET,
+    { expiresIn: "7d" }
+  );
+};
+
 router.get("/user", async (req, res) => {
   try {
     const users = await User.find().select("-password");
@@ -39,9 +47,12 @@ router.post("/register", async (req, res) => {
     });
     await user.save();
 
-    // TODO: tambahin token generation di sini
+    // gen token
+    const token = signToken(user);
 
     res.status(201).json({
+      message: "register sukses ngab",
+      token,
       user: {
         id: user._id, username: user.username,
         email: user.email
@@ -68,9 +79,12 @@ router.post("/login", async (req, res) => {
     const isPasswordCorrect = await user.comparePassword(password);
     if(!isPasswordCorrect)return res.status(400).json({message: "invalid credentials"});
 
-    // TODO: Generate token here
+    // gen token
+    const token = signToken(user);
+
     res.status(200).json({
       message:"login success",
+      token,
       user: {
         id: user._id, username: user.username,
         email: user.email
@@ -80,7 +94,12 @@ router.post("/login", async (req, res) => {
     console.log("error in login route", error);
     res.status(500).json({message: "internal server error"});
   }
-})
+});
+
+import { protect } from "../middleware/authMiddleware.js";
+router.get("/me", protect, async (req, res) => {
+  res.status(200).json({ user: req.user });
+});
 
 
 export default router;
