@@ -6,7 +6,7 @@ const router = express.Router();
 
 const signToken = (user) => {
   return jwt.sign(
-    { id: user._id, username: user.username, email: user.email },
+    { id: user._id, username: user.username, email: user.email, role: user.role },
     process.env.JWT_SECRET,
     { expiresIn: "7d" }
   );
@@ -55,7 +55,7 @@ router.post("/register", async (req, res) => {
       token,
       user: {
         id: user._id, username: user.username,
-        email: user.email
+        email: user.email, role: user.role
       }
     });
 
@@ -87,7 +87,7 @@ router.post("/login", async (req, res) => {
       token,
       user: {
         id: user._id, username: user.username,
-        email: user.email
+        email: user.email, role: user.role
       }
     })
   } catch (error) {

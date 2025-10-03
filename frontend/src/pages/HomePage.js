@@ -36,7 +36,35 @@ function HomePage() {
 
   return (
     <div style={{ padding: "20px" }}>
-      <h2>Daftar Post</h2>
+      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "20px" }}>
+        <h2>Daftar Post</h2>
+        <div>
+          <Link 
+            to="/login" 
+            style={{ 
+              padding: "10px 20px", 
+              backgroundColor: "#667eea", 
+              color: "white", 
+              textDecoration: "none", 
+              borderRadius: "8px",
+              fontWeight: "500",
+              transition: "all 0.3s ease"
+            }}
+          >
+            Login
+          </Link>
+        </div>
+      </div>
+      <div style={{ 
+        marginBottom: "20px", 
+        padding: "12px", 
+        backgroundColor: "#fff3cd", 
+        borderRadius: "6px",
+        border: "1px solid #ffeaa7",
+        fontSize: "14px"
+      }}>
+        <strong>ℹ️ Info:</strong> Profile page dan Admin dashboard hanya bisa diakses oleh admin yang sudah login.
+      </div>
       {posts.length === 0 ? (
         <p>Tidak ada post tersedia</p>
       ) : (

@@ -1,37 +1,66 @@
 import React, { useEffect, useState } from "react";
-import { useParams } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import "../App.css";
 
 function ProfilePage() {
-  const { id } = useParams();
   const [user, setUser] = useState(null);
   const [title, setTitle] = useState("");
   const [content, setContent] = useState("");
+  const navigate = useNavigate();
 
   useEffect(() => {
-    fetch(`https://jsonplaceholder.typicode.com/users/${id}`)
-      .then((res) => res.json())
-      .then((data) => setUser(data));
-  }, [id]);
+    // Get user data from localStorage (current session)
+    const userData = localStorage.getItem('user');
+    const token = localStorage.getItem('token');
+    
+    // Role checking is now handled by ProtectedRoute component
+    if (userData && token) {
+      try {
+        const parsedUser = JSON.parse(userData);
+        setUser(parsedUser);
+      } catch (error) {
+        console.error('Error parsing user data:', error);
+        navigate('/login');
+      }
+    }
+  }, [navigate]);
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
+    
+    const token = localStorage.getItem('token');
+    if (!token) {
+      alert('Please login first');
+      navigate('/login');
+      return;
+    }
 
-    fetch("https://jsonplaceholder.typicode.com/posts", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
-        title: title,
-        body: content,
-        userId: id,
-      }),
-    })
-      .then((res) => res.json())
-      .then((data) => {
-        alert("Post uploaded!\n" + JSON.stringify(data, null, 2));
+    try {
+      const response = await fetch("http://localhost:5000/api/posts", {
+        method: "POST",
+        headers: { 
+          "Content-Type": "application/json",
+          "Authorization": `Bearer ${token}`
+        },
+        body: JSON.stringify({
+          title: title,
+          body: content,
+          tags: [] // Optional tags
+        }),
+      });
+      
+      const data = await response.json();
+      
+      if (response.ok) {
+        alert("Post berhasil dibuat!");
         setTitle("");
         setContent("");
-      });
+      } else {
+        alert("Error: " + data.message);
+      }
+    } catch (error) {
+      alert("Network error: " + error.message);
+    }
   };
 
   return (
@@ -39,9 +68,8 @@ function ProfilePage() {
       <h2>Profile Saya</h2>
       {user ? (
         <div className="card">
-          <p><strong>Nama:</strong> {user.name}</p>
+          <p><strong>Nama:</strong> {user.name || user.username}</p>
           <p><strong>Email:</strong> {user.email}</p>
-          <p><strong>Website:</strong> {user.website}</p>
         </div>
       ) : (
         <p>Loading profile...</p>
