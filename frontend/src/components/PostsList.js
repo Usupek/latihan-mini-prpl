@@ -1,26 +1,63 @@
 import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
-import "./App.css";
 
-function PostsList() {
+function PostsList({ excludeId, limit = 5 }) {
   const [posts, setPosts] = useState([]);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    fetch("https://jsonplaceholder.typicode.com/posts")
+    fetch("http://localhost:5000/api/posts")
       .then((res) => res.json())
-      .then((data) => setPosts(data.slice(0, 10)));
-  }, []);
+      .then((response) => {
+        const allPosts = response.data || response;
+        
+        const filteredPosts = allPosts
+          .filter(post => post._id !== excludeId)
+          .slice(0, limit);
+        
+        setPosts(filteredPosts);
+        setLoading(false);
+      })
+      .catch((error) => {
+        console.error("Error fetching posts:", error);
+        setLoading(false);
+      });
+  }, [excludeId, limit]);
+
+  if (loading) return <p>Loading related posts...</p>;
+  if (posts.length === 0) return null;
 
   return (
-    <div>
-      <h2>All Posts</h2>
-      {posts.map((post) => (
-        <div className="card" key={post.id}>
-          <h3>{post.title}</h3>
-          <p>{post.body.substring(0, 60)}...</p>
-          <Link to={`/posts/${post.id}`} className="btn">Read More</Link>
-        </div>
-      ))}
+    <div style={{ marginTop: "40px", borderTop: "2px solid #eee", paddingTop: "20px" }}>
+      <h3>Related Posts</h3>
+      <div style={{ display: "grid", gap: "15px" }}>
+        {posts.map((post) => (
+          <div 
+            key={post._id || post.id} 
+            style={{
+              border: "1px solid #ddd",
+              padding: "15px",
+              borderRadius: "8px",
+              transition: "box-shadow 0.3s",
+            }}
+          >
+            <h4 style={{ marginBottom: "10px" }}>{post.title}</h4>
+            <p style={{ color: "#666", marginBottom: "10px" }}>
+              {post.body?.substring(0, 100)}...
+            </p>
+            <Link 
+              to={`/posts/${post._id || post.id}`}
+              style={{
+                color: "#1E90FF",
+                textDecoration: "none",
+                fontWeight: "bold"
+              }}
+            >
+              Read More →
+            </Link>
+          </div>
+        ))}
+      </div>
     </div>
   );
 }

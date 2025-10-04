@@ -1,24 +1,73 @@
-import React, { useEffect, useState } from "react";
-import { useParams, Link } from "react-router-dom";
-import "./App.css";
+import React from "react";
+import { Link } from "react-router-dom";
 
-function PostDetail() {
-  const { id } = useParams();
-  const [post, setPost] = useState(null);
+function PostDetail({ post, loading, error }) {
+  if (loading) {
+    return <div style={{ padding: "20px" }}>Loading...</div>;
+  }
 
-  useEffect(() => {
-    fetch(`https://jsonplaceholder.typicode.com/posts/${id}`)
-      .then((res) => res.json())
-      .then((data) => setPost(data));
-  }, [id]);
+  if (error) {
+    return (
+      <div style={{ padding: "20px", color: "red" }}>
+        <p>Error: {error}</p>
+        <Link to="/">← Kembali ke Home</Link>
+      </div>
+    );
+  }
 
-  if (!post) return <p>Loading...</p>;
+  if (!post) {
+    return (
+      <div style={{ padding: "20px" }}>
+        <p>Post tidak ditemukan</p>
+        <Link to="/">← Kembali ke Home</Link>
+      </div>
+    );
+  }
 
   return (
-    <div>
-      <h2 className="post-title">{post.title}</h2>
-      <p>{post.body}</p>
-      <Link to="/" className="btn">Back</Link>
+    <div style={{ padding: "20px", maxWidth: "800px", margin: "0 auto" }}>
+      <Link 
+        to="/" 
+        style={{ 
+          textDecoration: "none", 
+          color: "#1E90FF", 
+          marginBottom: "20px", 
+          display: "inline-block" 
+        }}
+      >
+        ← Kembali ke Home
+      </Link>
+      
+      <h2 style={{ marginTop: "20px" }}>{post.title}</h2>
+      
+      <div style={{ marginBottom: "15px", color: "#666" }}>
+        <small>
+          By: <strong>{post.author?.username}</strong> | 
+          Email: {post.author?.email} | 
+          Created: {new Date(post.createdAt).toLocaleDateString('id-ID')}
+        </small>
+      </div>
+
+      {post.tags && post.tags.length > 0 && (
+        <div style={{ marginBottom: "15px" }}>
+          {post.tags.map((tag, index) => (
+            <span 
+              key={index} 
+              style={{
+                background: "#e0e0e0",
+                padding: "5px 10px",
+                borderRadius: "5px",
+                marginRight: "5px",
+                fontSize: "12px"
+              }}
+            >
+              #{tag}
+            </span>
+          ))}
+        </div>
+      )}
+
+      <p style={{ lineHeight: "1.6", fontSize: "16px" }}>{post.body}</p>
     </div>
   );
 }
